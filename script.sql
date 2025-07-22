@@ -20,7 +20,7 @@ CREATE TABLE equipamento (
         'quebrado'
     ),
     CREATED_AT TIMESTAMP DEFAULT(NOW()),
-    UPDATE_AT TIMESTAMP DEFAULT(NOW()) on update now()
+    UPDATED_AT TIMESTAMP DEFAULT(NOW()) on update now()
 );
 
 CREATE TABLE membros (
@@ -33,7 +33,7 @@ CREATE TABLE membros (
     data_de_matricula DATE,
     plano_de_contrato ENUM('PLUS', 'PRO', 'OMEGA'),
     CREATED_AT TIMESTAMP DEFAULT(NOW()),
-    UPDATE_AT TIMESTAMP DEFAULT(NOW()) on update now()
+    UPDATED_AT TIMESTAMP DEFAULT(NOW()) on update now()
 );
 
 CREATE TABLE usuarios (
@@ -46,7 +46,7 @@ CREATE TABLE usuarios (
     tipo ENUM('Membro', 'Admin'),
     id_membro INT,
     CREATED_AT TIMESTAMP DEFAULT(NOW()),
-    UPDATE_AT TIMESTAMP DEFAULT(NOW()) on update now(),
+    UPDATED_AT TIMESTAMP DEFAULT(NOW()) on update now(),
     Foreign Key (id_membro) REFERENCES membros (id)
 );
 
@@ -57,7 +57,7 @@ CREATE TABLE reservas (
     data_reserva DATETIME not null,
     data_termino DATETIME NOT NULL,
     CREATED_AT TIMESTAMP DEFAULT(NOW()),
-    UPDATE_AT TIMESTAMP DEFAULT(NOW()) on update now(),
+    UPDATED_AT TIMESTAMP DEFAULT(NOW()) on update now(),
     Foreign Key (id_usuario) REFERENCES usuarios (id),
     Foreign Key (id_equipamento) REFERENCES equipamento (id)
 );
