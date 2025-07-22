@@ -18,7 +18,22 @@ CREATE TABLE equipamento (
         'bom',
         'gasto',
         'quebrado'
-    )
+    ),
+    CREATED_AT TIMESTAMP DEFAULT(NOW()),
+    UPDATE_AT TIMESTAMP DEFAULT(NOW()) on update now()
+);
+
+CREATE TABLE membros (
+    id int auto_increment primary key,
+    nome VARCHAR(200) NOT NULL,
+    cpf VARCHAR(14) NOT NULL UNIQUE,
+    data_de_nascimento DATE NOT NULL,
+    endereco VARCHAR(250) NOT NULL,
+    telefone INT(11) NOT NULL UNIQUE,
+    data_de_matricula DATE,
+    plano_de_contrato ENUM('PLUS', 'PRO', 'OMEGA'),
+    CREATED_AT TIMESTAMP DEFAULT(NOW()),
+    UPDATE_AT TIMESTAMP DEFAULT(NOW()) on update now()
 );
 
 CREATE TABLE usuarios (
@@ -30,18 +45,9 @@ CREATE TABLE usuarios (
     senha_hash VARCHAR(250) NOT NULL,
     tipo ENUM('Membro', 'Admin'),
     id_membro INT,
+    CREATED_AT TIMESTAMP DEFAULT(NOW()),
+    UPDATE_AT TIMESTAMP DEFAULT(NOW()) on update now(),
     Foreign Key (id_membro) REFERENCES membros (id)
-);
-
-CREATE TABLE membros (
-    id int auto_increment primary key,
-    nome VARCHAR(200) NOT NULL,
-    cpf VARCHAR(14) NOT NULL UNIQUE,
-    data_de_nascimento DATE NOT NULL,
-    endereco VARCHAR(250) NOT NULL,
-    telefone INT(11) NOT NULL UNIQUE,
-    data_de_matricula DATE,
-    plano_de_contrato ENUM('PLUS', 'PRO', 'OMEGA')
 );
 
 CREATE TABLE reservas (
@@ -50,6 +56,8 @@ CREATE TABLE reservas (
     id_equipamento int not null,
     data_reserva DATETIME not null,
     data_termino DATETIME NOT NULL,
+    CREATED_AT TIMESTAMP DEFAULT(NOW()),
+    UPDATE_AT TIMESTAMP DEFAULT(NOW()) on update now(),
     Foreign Key (id_usuario) REFERENCES usuarios (id),
     Foreign Key (id_equipamento) REFERENCES equipamento (id)
 );
