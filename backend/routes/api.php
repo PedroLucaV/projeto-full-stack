@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\EquipamentoController;
 use App\Http\Controllers\MembrosController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ReservasController;
 use App\Models\Membros;
 
 Route::get('/', function (){
@@ -23,8 +24,8 @@ Route::prefix('/equipamentos')->group(function (){
 
 Route::prefix('/membros')->group(function (){
     Route::post('/register', [MembrosController::class, 'registrarUsuario']); //criacao de usuario pelo membro
+    Route::post('/rAdm', [MembrosController::class, 'registrarAdmin']);
     Route::middleware('auth:sanctum')->group(function (){
-        Route::post('/rAdm', [MembrosController::class, 'registrarAdmin']);
         Route::get('/', [MembrosController::class, 'getAll']);
         Route::post('/', [MembrosController::class, 'criarMembros']); //exclusivoAdmin
         Route::put('/{id}', [MembrosController::class, 'editMembro']); //Adm ou proprio membro
@@ -33,14 +34,16 @@ Route::prefix('/membros')->group(function (){
     });
 });
 
-// Route::prefix('/reservas')->group(function (){
-//     Route::get('/', [ReservasController::class, '']);
-//     Route::post('/', [ReservasController::class, '']);
-//     Route::put('/{id}/estender', [ReservasController::class, '']);
-//     Route::delete('/{id}', [ReservasController::class, '']);
-//     Route::get('/minhas', [ReservasController::class, '']);
-//     Route::get('/historico', [ReservasController::class, '']);
-// });
+Route::prefix('/reservas')->group(function (){
+    Route::middleware('auth:sanctum')->group(function() {
+        Route::get('/', [ReservasController::class, 'getAll']);
+        Route::post('/', [ReservasController::class, 'createReserva']);
+        // Route::put('/{id}/estender', [ReservasController::class, '']);
+        // Route::delete('/{id}', [ReservasController::class, '']);
+        Route::get('/minhas', [ReservasController::class, 'getMine']);
+        Route::get('/historico', [ReservasController::class, 'getHistory']);
+    });
+});
 
 Route::prefix('auth')->group(function (){
     Route::post('/login', [AuthController::class, 'login']);

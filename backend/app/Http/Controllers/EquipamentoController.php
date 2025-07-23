@@ -48,8 +48,9 @@ class EquipamentoController extends Controller
 
     public function findAvaliable(){
         $qntReservas = DB::select(
-            'SELECT e.* FROM equipamento as e
-                    INNER JOIN reservas as r where (r.id_equipamento != e.id);');
+            'SELECT e.* from equipamento as e
+                    LEFT JOIN reservas as r on e.id = r.id_equipamento
+                    WHERE r.id_equipamento IS NULL');
 
         return response()->json($qntReservas);
     }
