@@ -16,6 +16,9 @@ class EquipamentoController extends Controller
     }
 
     public function store(Request $request){
+        if($request->user()->currentAccessToken()['name'] != 'admin_token'){
+            return response(['message'=>'Operação Não Autorizada'], 401);
+        }
         $request->validate([
             "nome" => 'required|string',
             "marca" => 'required|string',
@@ -32,6 +35,9 @@ class EquipamentoController extends Controller
     }
 
     public function updateLocation(Request $request, $id){
+        if ($request->user()->currentAccessToken()['name'] != 'admin_token') {
+            return response(['message' => 'Operação Não Autorizada'], 401);
+        }
         $equipamento = Equipamentos::findOrFail($id);
         $equipamento->update($request->validate([
             "localizacao" => 'required|string'
