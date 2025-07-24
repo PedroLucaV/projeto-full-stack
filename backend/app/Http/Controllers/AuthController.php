@@ -28,7 +28,7 @@ class AuthController extends Controller
         }
 
         $user['tipo'] == 'Membro' ? $token = $user->createToken('member_token') : $token = $user->createToken('admin_token');
-        $access = ['token' => $token->plainTextToken, 'id' => $user['id']];
+        $access = ['token' => $token->plainTextToken, 'id' => $user['id'], 'token_name' => $token->accessToken['name']];
         return $access;
     }
 

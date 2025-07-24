@@ -12,7 +12,7 @@ class EquipamentoController extends Controller
 {
     public function getAll(Request $request){
         $data = Equipamentos::all();
-        return response()->json($data);
+        return response()->json(['data'=> $data]);
     }
 
     public function store(Request $request){
