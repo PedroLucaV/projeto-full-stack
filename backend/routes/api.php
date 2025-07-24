@@ -38,8 +38,8 @@ Route::prefix('/reservas')->group(function (){
     Route::middleware('auth:sanctum')->group(function() {
         Route::get('/', [ReservasController::class, 'getAll']);
         Route::post('/', [ReservasController::class, 'createReserva']);
-        // Route::put('/{id}/estender', [ReservasController::class, '']);
-        // Route::delete('/{id}', [ReservasController::class, '']);
+        Route::put('/{id}/estender', [ReservasController::class, 'estender']);
+        Route::delete('/{id}', [ReservasController::class, '']);
         Route::get('/minhas', [ReservasController::class, 'getMine']);
         Route::get('/historico', [ReservasController::class, 'getHistory']);
     });

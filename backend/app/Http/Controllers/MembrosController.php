@@ -70,9 +70,9 @@ class MembrosController extends Controller
     }
 
     public function registrarAdmin(Request $request){
-        if ($request->user()->currentAccessToken()['name'] != 'admin_token') {
-            return response(['message' => 'Operação Não Autorizada'], 401);
-        }
+        // if ($request->user()->currentAccessToken()['name'] != 'admin_token') {
+        //     return response(['message' => 'Operação Não Autorizada'], 401);
+        // }
 
         $user = $request->validate([
             'nome'=> 'required',

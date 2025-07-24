@@ -43,17 +43,48 @@ class ReservasController extends Controller
         $data_reserva = $request->validate(['data_reserva' => 'required|date'])['data_reserva'];
         $userId = $request->user()->currentAccessToken()['id'];
 
-        $verifyIfBusy ="  SELECT e.id,
-                          (SELECT count(*) from reservas as r where r.id_equipamento = e.id) as reservas
-                          FROM equipamento as e where e.id = $id_maquina;";
-        if(DB::select($verifyIfBusy)[0]->reservas > 0){
+        $verifyIfBusy ="SELECT e.id as id_maquina,
+                        (SELECT count(*) from reservas as r where r.id_equipamento = e.id and r.data_termino >= $data_reserva or $data_reserva) as reservas
+                        FROM equipamento as e where e.id = 1";
+        if(count(DB::select($verifyIfBusy)) > 0){
             return response(['message'=> 'Maquina já reservada para esta hora'], 405);
         }
 
-        // $verifyUserAppoints = 
+        $verifyUserAppoints = "SELECT count(*) as reservas from reservas where id_usuario = $userId and status = 'ativo'";
 
-        // $query = "INSERT INTO reservas (id_usuario, id_equipamento, data_reserva, data_termino) values ($userId, $id_maquina, $data_reserva,ADDTIME(now(), '0 0:45:0.000000'));";
+        if(count(DB::select($verifyUserAppoints)) > 0 && DB::select($verifyUserAppoints)[0]->reservas == 2){
+            return response(['message' => 'Você já possui duas maquinas reservadas no momento'], 405);
+        }
 
-        return '';
+        $query = "INSERT INTO reservas (id_usuario, id_equipamento, data_reserva, data_termino) values ($userId, $id_maquina, $data_reserva,ADDTIME($data_reserva, '0 0:45:0.000000'))";
+
+        $reserva = DB::select($query);
+
+        return response(['data'=> $reserva], 201);
+    }
+
+    public function estender(Request $request, $id){
+        $reserva = Reservas::findOrFail($id);
+        $idEqu = $reserva['id_equipamento'];
+        $dtR = $reserva['data_reserva'];
+        $dtT = $reserva['data_termino'];
+        $idR = $reserva['id'];
+        $verifyQueue = "SELECT * FROM reservas where id_equipamento = $idEqu && data_reserva <= ADDTIME($dtR, '0 0:30:0.000000'))";
+        if(count(DB::select($verifyQueue)) > 0){
+            return response(["message"=> "Não é possivel estender a reserva, já há outro na fila"], 405);
+        }
+
+        $query = "UPDATE reservas SET data_termino = ADDTIME($dtT, '0 0:30:0.000000') where id = $idR";
+        $res = DB::select($query);
+        return response(['data'=> $res], 200);
+    }
+
+    public function cancelar(Request $request, $id){
+        $reserva = Reservas::findOrFail($id);
+        $idR = $reserva['id'];
+
+        $query = "UPDATE reservas SET status = 'terminado' where id = $idR";
+        DB::select($query);
+        return response(["message"=> "Reserva Cancelada"], 200);
     }
 }

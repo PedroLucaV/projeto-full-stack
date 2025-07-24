@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import axios from 'axios';
 
 const email = ref(null);
@@ -10,24 +10,16 @@ const sto = () => {
   location.href = '/dashboard';
 }
 
-const api = async () => {
-  const url = 'http://localhost:8000/api';
-  const header = new Headers()
-  header.append('Access-Control-Allow-Origin', 'application/javascript')
+onMounted(async () => {
   try {
-    const res = await fetch(url);
-
-    const json = await res.json();
-
-    console.log(json);
+    const res = await axios.get('http://localhost:8000/api', {method:"GET"})
+    console.log(res);
     
   } catch (error) {
     console.error(error);
     
   }
-}
-
-api()
+})
 </script>
 
 <template>
